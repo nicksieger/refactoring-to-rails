@@ -1,2 +1,5 @@
 .svn
+bin
 target
+src/main/webapp/WEB-INF/gems
+
