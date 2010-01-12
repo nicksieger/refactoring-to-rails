@@ -88,18 +88,15 @@
 			<scope>runtime</scope>
 		</dependency>
 		<!-- MySQL JDBC Connector -->
-		<!--
 			<dependency> <groupId>com.mysql.jdbc</groupId>
 			<artifactId>com.springsource.com.mysql.jdbc</artifactId>
-			<version>5.1.6</version> </dependency>
-		-->
-
+			<version>5.1.6</version></dependency>
 		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>com.springsource.org.hibernate</artifactId>
 			<version>3.3.2.GA</version>
-			<optional>true</optional>
+<!-- 			<optional>true</optional> -->
 		</dependency>
 
 		<!-- JPA -->

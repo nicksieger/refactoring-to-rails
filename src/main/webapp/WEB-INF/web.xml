@@ -37,9 +37,9 @@
 	-->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/spring/applicationContext-jdbc.xml</param-value>
-        <!--
+<!-- 		<param-value>/WEB-INF/spring/applicationContext-jdbc.xml</param-value> -->
 		<param-value>/WEB-INF/spring/applicationContext-hibernate.xml</param-value>
+        <!--
 		<param-value>/WEB-INF/spring/applicationContext-jpa.xml</param-value>
 		-->
 
@@ -161,7 +161,7 @@
 	</session-config>
 
 	<error-page>
-		<exception-type>java.lang.Exception</exception-type>
+ 		<exception-type>java.lang.Exception</exception-type>
 		<!-- Displays a stack trace -->
 		<location>/WEB-INF/jsp/uncaughtException.jsp</location>
 	</error-page>
