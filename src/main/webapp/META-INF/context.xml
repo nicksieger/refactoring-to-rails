@@ -1,0 +1,8 @@
+<!-- Tomcat context descriptor used for specifying a custom ClassLoader -->
+<!-- Useful for allowing web-app wide (as opposed to VM or container wide) class instrumentation -->
+<Context path="/petclinic" reloadable="false">
+	<!-- please note that useSystemClassLoaderAsParent is available since Tomcat 5.5.20 / remove if previous versions are being used -->
+	<!--  
+	<Loader loaderClass="org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader" useSystemClassLoaderAsParent="false"/>
+	-->
+</Context>
