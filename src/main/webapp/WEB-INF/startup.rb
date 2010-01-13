@@ -11,9 +11,11 @@ module org::springframework::beans::factory::BeanFactory
 end
 
 module Spring
-  import WebApplicationContextUtils
-  CONTEXT = WebApplicationContextUtils.getWebApplicationContext(servletContext)
+  import org.springframework.web.context.support.WebApplicationContextUtils
+  CONTEXT = WebApplicationContextUtils.getWebApplicationContext($servlet_context)
   def self.context
     CONTEXT
   end
 end
+
+require 'drbirb/loader'

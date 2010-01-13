@@ -23,12 +23,15 @@ public class StartupScriptLauncher implements ServletContextListener {
             container = new ScriptingContainer();
             // setup any global variables
             container.put("$servlet_context", servletContext);
+
             // Setup load path
             // (Note: JRuby 1.5 API has #setLoadPaths(List))
             container.put("path1", servletContext.getRealPath("/WEB-INF"));
             container.put("path2", servletContext.getRealPath("/WEB-INF/lib"));
+            container.runScriptlet("$LOAD_PATH << path1 << path2");
+
             // require e.g., WEB-INF/startup.rb
-            container.runScriptlet("$LOAD_PATH << path1 << path2; require 'startup'");
+            container.runScriptlet("require 'startup'");
         } catch (Exception ex) {
             ex.printStackTrace();
             servletContext.log(ex.getMessage());
@@ -36,6 +39,8 @@ public class StartupScriptLauncher implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent event) {
+        // require e.g., WEB-INF/shutdown.rb
+        container.runScriptlet("require 'shutdown'");
         container = null;
     }
 }
