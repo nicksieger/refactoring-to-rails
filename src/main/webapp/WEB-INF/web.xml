@@ -88,6 +88,8 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
+        <listener><listener-class>net.caldersphere.webdemos.StartupScriptLauncher</listener-class></listener>
+
 	<!--
 		Defines the 'default' servlet (usually for service static resources).
 		Uncomment this in containers (GlassFish) that do not declare this 
