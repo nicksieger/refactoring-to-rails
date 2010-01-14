@@ -1,0 +1,13 @@
+<p>
+  <b>First name:</b>
+  <%=h @vet.first_name %>
+</p>
+
+<p>
+  <b>Last name:</b>
+  <%=h @vet.last_name %>
+</p>
+
+
+<%= link_to 'Edit', edit_vet_path(@vet) %> |
+<%= link_to 'Back', vets_path %>

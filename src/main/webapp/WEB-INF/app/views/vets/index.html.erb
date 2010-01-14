@@ -1,0 +1,22 @@
+<h1>Listing vets</h1>
+
+<table>
+  <tr>
+    <th>First name</th>
+    <th>Last name</th>
+  </tr>
+
+<% @vets.each do |vet| %>
+  <tr>
+    <td><%=h vet.first_name %></td>
+    <td><%=h vet.last_name %></td>
+    <td><%= link_to 'Show', vet %></td>
+    <td><%= link_to 'Edit', edit_vet_path(vet) %></td>
+    <td><%= link_to 'Destroy', vet, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New vet', new_vet_path %>

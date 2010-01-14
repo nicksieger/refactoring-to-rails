@@ -1,5 +1,9 @@
 class SampleController < ApplicationController
   def index
-    render :text => "hello from #{self.class}"
+    render :text => "Hello from #{self.class.name}"
+  end
+
+  def routes
+    render :text => ActionController::Routing::Routes.routes.to_s
   end
 end
