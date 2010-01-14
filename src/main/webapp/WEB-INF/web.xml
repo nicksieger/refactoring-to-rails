@@ -108,6 +108,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
+        <listener><listener-class>net.caldersphere.webdemos.StartupScriptLauncher</listener-class></listener>
         <listener><listener-class>org.jruby.rack.rails.RailsServletContextListener</listener-class></listener>
 
 	<!--
