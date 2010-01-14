@@ -52,6 +52,26 @@
 		-->
 	</context-param>
 
+        <context-param>
+          <param-name>rails.env</param-name>
+          <param-value>production</param-value>
+        </context-param>
+
+        <context-param>
+          <param-name>jruby.min.runtimes</param-name>
+          <param-value>1</param-value>
+        </context-param>
+
+        <context-param>
+          <param-name>jruby.max.runtimes</param-name>
+          <param-value>1</param-value>
+        </context-param>
+
+        <context-param>
+          <param-name>gem.path</param-name>
+          <param-value>/WEB-INF/gems/jruby/1.8</param-value>
+        </context-param>
+
 	<!--
 		- Configures Log4J for this web app.
 		- As this context specifies a context-param "log4jConfigLocation", its file path
@@ -88,7 +108,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
-        <listener><listener-class>net.caldersphere.webdemos.StartupScriptLauncher</listener-class></listener>
+        <listener><listener-class>org.jruby.rack.rails.RailsServletContextListener</listener-class></listener>
 
 	<!--
 		Defines the 'default' servlet (usually for service static resources).
@@ -120,6 +140,15 @@
 		<url-pattern>/static/*</url-pattern>
 	</servlet-mapping>
 	
+        <servlet>
+          <servlet-name>RackServlet</servlet-name>
+          <servlet-class>org.jruby.rack.RackServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+          <servlet-name>RackServlet</servlet-name>
+          <url-pattern>/sample/*</url-pattern>
+        </servlet-mapping>
+
 	<!--
 		- Servlet that dispatches request to registered handlers (Controller implementations).
 		- Has its own application context, by default defined in "{servlet-name}-servlet.xml",
