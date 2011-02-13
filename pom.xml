@@ -183,6 +183,13 @@
 			<version>1.1.2</version>
 		</dependency>
 
+                <!-- JTA -->
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>com.springsource.javax.transaction</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
 		<!-- Rome RSS -->
 		<dependency>
 			<groupId>com.sun.syndication</groupId>
@@ -217,13 +224,6 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>com.springsource.javax.transaction</artifactId>
-			<version>1.1.0</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 	<repositories>
 		<repository>
