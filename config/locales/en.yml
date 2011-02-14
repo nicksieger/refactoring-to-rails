@@ -2,4 +2,11 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  welcome: Welcome
+  required: is required
+  notFound: has not been found
+  duplicate: is already in use
+  nonNumeric: must be all numeric
+  duplicateFormSubmission: Duplicate form submission is not allowed
+  "typeMismatch.date": invalid date
+  "typeMismatch.birthDate": invalid date

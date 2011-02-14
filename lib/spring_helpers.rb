@@ -22,19 +22,45 @@ module org::hibernate::SessionFactory
 
   def transaction(&block)
     with_session do |session|
-      session.transaction(&block)
+      session.with_transaction(&block)
     end
   end
 end
 
 module org::hibernate::Session
-  def transaction
+  def with_transaction
     begin
       tx = beginTransaction
       yield self
       tx.commit
     rescue
       tx.rollback
+    end
+  end
+end
+
+class org::springframework::samples::petclinic::BaseEntity
+  def self.name
+    super.split('::')[-1]
+  end
+
+  # Since the Hibernate model classes are technically not fully
+  # unloaded every request (even though the constants are), we need to
+  # reset validations here.
+  def self.before_remove_const
+    if respond_to?(:_validators)
+      _validators.clear
+      reset_callbacks(:validate)
+    end
+  end
+
+  def persisted?
+    !new?
+  end
+
+  def update_attributes(attrs)
+    attrs.each do |k,v|
+      send("#{k}=", v) if respond_to?("#{k}=")
     end
   end
 end

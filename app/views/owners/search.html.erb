@@ -1,0 +1,19 @@
+<h2>Find Owners:</h2>
+
+<% form_tag owners_path, :method => :get do -%>
+  <table>
+    <tr>
+      <th>
+        Last Name:
+        <br/> 
+        <%= search_field_tag "lastName", params[:lastName], :size => 30, :maxlength => 80 %>
+      </th>
+    </tr>
+    <tr>
+      <td><p class="submit"><input type="submit" value="Find Owners"/></p></td>
+    </tr>
+  </table>
+<% end -%>
+
+<br/>
+<%= link_to 'Add Owner', new_owner_path %>
