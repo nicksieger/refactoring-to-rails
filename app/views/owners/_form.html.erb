@@ -33,12 +33,12 @@
       <th>
         <%= f.label :telephone %>
         <br/>
-        <%= f.text_field :telephone, :size => 30, :maxlength => 80 %>
+        <%= f.text_field :telephone, :size => 20, :maxlength => 20 %>
       </th>
     </tr>
     <tr>
       <td>
-        <%= f.submit "#{@owner.new? ? 'Add' : 'Update'} Owner"  %>
+        <p class="submit"><%= f.submit "#{@owner.new? ? 'Add' : 'Update'} Owner" %></p>
       </td>
     </tr>
   </table>
