@@ -1,7 +1,7 @@
 require 'spring_helpers'
 
 module Spring
-  $CLASSPATH << File.join(Rails.root, 'src/main/webapp/WEB-INF/spring')
+  $CLASSPATH << File.join(Rails.root, 'src/main/webapp/WEB-INF/spring') unless defined?($servlet_context)
   SPRING_XML_CONFIG_FILES = %w(
        applicationContext-dataSource
        applicationContext-hibernate
