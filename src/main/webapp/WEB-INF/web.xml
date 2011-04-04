@@ -87,6 +87,21 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+
+        <listener>
+                <listener-class>org.jruby.rack.RackServletContextListener</listener-class>
+        </listener>
+
+        <servlet>
+                <servlet-name>rack</servlet-name>
+                <servlet-class>org.jruby.rack.RackServlet</servlet-class>
+        </servlet>
+
+        <servlet-mapping>
+                <servlet-name>rack</servlet-name>
+                <url-pattern>/rack/*</url-pattern>
+        </servlet-mapping>
+
 	
 	<!--
 		Defines the 'default' servlet (usually for service static resources).

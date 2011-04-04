@@ -211,6 +211,18 @@
 			<scope>provided</scope>
 		</dependency>
 
+                <!-- JRuby and JRuby-Rack -->
+                <dependency>
+                        <groupId>org.jruby</groupId>
+                        <artifactId>jruby-complete</artifactId>
+                        <version>1.6.0</version>
+                </dependency>
+                <dependency>
+                        <groupId>org.jruby.rack</groupId>
+                        <artifactId>jruby-rack</artifactId>
+                        <version>1.0.8</version>
+                </dependency>
+
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.junit</groupId>
