@@ -61,11 +61,14 @@
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="mediaTypes">
 			<map>
+				<entry key="html" value="text/html"/>
 				<entry key="xml" value="#{vets.contentType}"/>
 				<entry key="atom" value="#{visits.contentType}"/>
 			</map>
 		</property>
 		<property name="order" value="0"/>
+                <property name="ignoreAcceptHeader" value="true"/>
+                <property name="defaultContentType" value="text/html"/>
 	</bean>
 	
 	<!--
