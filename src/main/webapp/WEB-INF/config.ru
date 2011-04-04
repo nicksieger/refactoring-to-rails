@@ -6,8 +6,10 @@ if development?
   use Rack::ShowExceptions
 end
 
-$LOAD_PATH << File.expand_path('../lib', __FILE__)
+base = File.expand_path('..', __FILE__)
+$LOAD_PATH << File.join(base, 'lib')
 require 'app'
 
 set :run, false
+set :views, File.join(base, 'views')
 run Sinatra::Application
