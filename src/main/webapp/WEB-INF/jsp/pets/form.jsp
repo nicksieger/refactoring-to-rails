@@ -13,21 +13,21 @@
   <table>
     <tr>
       <th>
-        Name: <form:errors path="name" cssClass="errors"/>
+        <label for="name">Name:</label> <form:errors path="name" cssClass="errors"/>
         <br/>
         <form:input path="name" size="30" maxlength="30"/>
       </th>
     </tr>
     <tr>
       <th>
-        Birth Date: <form:errors path="birthDate" cssClass="errors"/>
+        <label for="birthDate">Birth Date:</label> <form:errors path="birthDate" cssClass="errors"/>
         <br/>
         <form:input path="birthDate" size="10" maxlength="10"/> (yyyy-mm-dd)
       </th>
     </tr>
     <tr>
       <th>
-        Type: <form:errors path="type" cssClass="errors"/>
+        <label for="type">Type:</label> <form:errors path="type" cssClass="errors"/>
         <br/>
         <form:select path="type" items="${types}"/>
       </th>

@@ -23,7 +23,7 @@
   <table width="333">
     <tr>
       <th>
-        Date:
+        <label for="date">Date:</label>
         <br/><form:errors path="date" cssClass="errors"/>
       </th>
       <td>
@@ -32,7 +32,7 @@
     <tr/>
     <tr>
       <th valign="top">
-        Description:
+        <label for="description">Description:</label>
         <br/><form:errors path="description" cssClass="errors"/>
       </th>
       <td>

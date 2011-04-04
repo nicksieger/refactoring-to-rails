@@ -10,35 +10,35 @@
   <table>
     <tr>
       <th>
-        First Name: <form:errors path="firstName" cssClass="errors"/>
+        <label for="firstName">First name:</label> <form:errors path="firstName" cssClass="errors"/>
         <br/>
         <form:input path="firstName" size="30" maxlength="80"/>
       </th>
     </tr>
     <tr>
       <th>
-        Last Name: <form:errors path="lastName" cssClass="errors"/>
+        <label for="lastName">Last name:</label> <form:errors path="lastName" cssClass="errors"/>
         <br/>
         <form:input path="lastName" size="30" maxlength="80"/>
       </th>
     </tr>
     <tr>
       <th>
-        Address: <form:errors path="address" cssClass="errors"/>
+        <label for="address">Address:</label> <form:errors path="address" cssClass="errors"/>
         <br/>
         <form:input path="address" size="30" maxlength="80"/>
       </th>
     </tr>
     <tr>
       <th>
-        City: <form:errors path="city" cssClass="errors"/>
+        <label for="city">City:</label> <form:errors path="city" cssClass="errors"/>
         <br/>
         <form:input path="city" size="30" maxlength="80"/>
       </th>
     </tr>
     <tr>
       <th>
-        Telephone: <form:errors path="telephone" cssClass="errors"/>
+        <label for="telephone">Telephone:</label> <form:errors path="telephone" cssClass="errors"/>
         <br/>
         <form:input path="telephone" size="20" maxlength="20"/>
       </th>
