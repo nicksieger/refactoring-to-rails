@@ -1,5 +1,10 @@
 source 'http://rubygems.org'
 
+gem 'sinatra'
+gem 'sinatra-reloader'
+gem 'json'
+gem 'builder'
+
 group :test do
   gem 'rspec-rails'
   gem 'cucumber-rails'

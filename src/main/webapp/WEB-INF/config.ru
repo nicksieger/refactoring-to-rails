@@ -1,5 +1,13 @@
-require 'rack'
-require 'rack/lobster'
+require 'rubygems'
+require 'sinatra'
 
-use Rack::ShowExceptions
-run Rack::Lobster.new
+if development?
+  require 'sinatra/reloader'
+  use Rack::ShowExceptions
+end
+
+$LOAD_PATH << File.expand_path('../lib', __FILE__)
+require 'app'
+
+set :run, false
+run Sinatra::Application

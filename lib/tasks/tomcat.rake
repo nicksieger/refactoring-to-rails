@@ -1,6 +1,7 @@
 namespace :tomcat do
   desc "Start the application using Tomcat"
   task :run do
+    ENV['RACK_ENV'] ||= 'development'
     output = ""
     output = " > #{ENV['TOMCAT_OUTPUT']} 2>&1" if ENV['TOMCAT_OUTPUT']
     sh "mvn org.codehaus.mojo:tomcat-maven-plugin:run -Dmaven.tomcat.path=/ -Dmaven.tomcat.port=3000#{output}"
