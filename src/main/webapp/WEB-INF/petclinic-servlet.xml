@@ -58,18 +58,18 @@
 		- BeanNameViewResolver. Note the use of the expression language to refer to the contentType
 		- property of the vets view bean, setting it to 'application/vnd.springsource.samples.petclinic+xml'.
 	-->
-	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-		<property name="mediaTypes">
-			<map>
-				<entry key="html" value="text/html"/>
-				<entry key="xml" value="#{vets.contentType}"/>
-				<entry key="atom" value="#{visits.contentType}"/>
-			</map>
-		</property>
-		<property name="order" value="0"/>
-                <property name="ignoreAcceptHeader" value="true"/>
-                <property name="defaultContentType" value="text/html"/>
-	</bean>
+	<!-- <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"> -->
+	<!-- 	<property name="mediaTypes"> -->
+	<!-- 		<map> -->
+	<!-- 			<entry key="html" value="text/html"/> -->
+	<!-- 			<entry key="xml" value="#{vets.contentType}"/> -->
+	<!-- 			<entry key="atom" value="#{visits.contentType}"/> -->
+	<!-- 		</map> -->
+	<!-- 	</property> -->
+	<!-- 	<property name="order" value="0"/> -->
+        <!--         <property name="ignoreAcceptHeader" value="true"/> -->
+        <!--         <property name="defaultContentType" value="text/html"/> -->
+	<!-- </bean> -->
 	
 	<!--
 		- The BeanNameViewResolver is used to pick up the visits view name (below).
@@ -77,7 +77,7 @@
 		- be the first view resolver to be used after the delegating content
 		- negotiating view resolver.
 	 -->
-	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="1"/>
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0"/>
 	<!--
 
 		- This bean configures the 'prefix' and 'suffix' properties of
@@ -86,21 +86,21 @@
 		- will be mapped to "/WEB-INF/jsp/vets.jsp".
 	-->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/"
-			p:suffix=".jsp" p:order="2"/>
+			p:suffix=".jsp" p:order="1"/>
 
 	<!--
 		- The AtomView rendering a Atom feed of the visits
 	 -->
-	<bean id="visits" class="org.springframework.samples.petclinic.web.VisitsAtomView"/>
+	<!-- <bean id="visits" class="org.springframework.samples.petclinic.web.VisitsAtomView"/> -->
 
-	<bean id="vets" class="org.springframework.web.servlet.view.xml.MarshallingView">
-		<property name="contentType" value="application/vnd.springsource.samples.petclinic+xml"/>
-		<property name="marshaller" ref="marshaller"/>
-	</bean>
+	<!-- <bean id="vets" class="org.springframework.web.servlet.view.xml.MarshallingView"> -->
+	<!-- 	<property name="contentType" value="application/vnd.springsource.samples.petclinic+xml"/> -->
+	<!-- 	<property name="marshaller" ref="marshaller"/> -->
+	<!-- </bean> -->
 
-	<oxm:jaxb2-marshaller id="marshaller">
-		<oxm:class-to-be-bound name="org.springframework.samples.petclinic.Vets"/>
-	</oxm:jaxb2-marshaller>
+	<!-- <oxm:jaxb2-marshaller id="marshaller"> -->
+	<!-- 	<oxm:class-to-be-bound name="org.springframework.samples.petclinic.Vets"/> -->
+	<!-- </oxm:jaxb2-marshaller> -->
 
 	<!--
 		- Message source for this context, loaded from localized "messages_xx" files.

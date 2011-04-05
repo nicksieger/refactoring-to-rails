@@ -23,10 +23,10 @@
 <table class="table-buttons">
   <tr>
     <td>
-      <a href="<spring:url value="/rack/vets.xml" htmlEscape="true" />">View as XML</a>
+      <a href="<spring:url value="/vets.xml" htmlEscape="true" />">View as XML</a>
     </td>
     <td>
-      <a href="<spring:url value="/rack/vets.json" htmlEscape="true" />">View as JSON</a>
+      <a href="<spring:url value="/vets.json" htmlEscape="true" />">View as JSON</a>
     </td>
   </tr>
 </table>
