@@ -1,14 +1,31 @@
-<!DOCTYPE html>
-<html>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<!--
+	PetClinic :: a Spring Framework demonstration
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
 <head>
-  <title>SpringPetclinic</title>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :defaults %>
-  <%= csrf_meta_tag %>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="<spring:url value="/static/styles/petclinic.css" htmlEscape="true" />" type="text/css"/>
+  <title>PetClinic :: a Spring Framework demonstration</title>	
 </head>
+
 <body>
 
-<%= yield %>
+  <div id="main">
 
+  <table class="footer">
+    <tr>
+      <td><a href="<spring:url value="/" htmlEscape="true" />">Home</a></td>
+      <td align="right"><img src="<spring:url value="/static/images/springsource-logo.png" htmlEscape="true" />" alt="Sponsored by SpringSource"/></td>
+    </tr>
+  </table>
+
+  </div>
 </body>
+
 </html>
