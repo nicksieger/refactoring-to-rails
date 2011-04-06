@@ -89,7 +89,7 @@
 	</listener>
 
         <listener>
-                <listener-class>org.jruby.rack.RackServletContextListener</listener-class>
+                <listener-class>org.jruby.rack.rails.RailsServletContextListener</listener-class>
         </listener>
 
 	

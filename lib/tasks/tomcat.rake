@@ -1,6 +1,8 @@
 namespace :tomcat do
   desc "Start the application using Tomcat"
   task :run do
+    ENV['BUNDLE_GEMFILE'] = File.expand_path('../../../Gemfile', __FILE__)
+    ENV['RAILS_ENV'] ||= 'development'
     ENV['RACK_ENV'] ||= 'development'
     output = ""
     output = " > #{ENV['TOMCAT_OUTPUT']} 2>&1" if ENV['TOMCAT_OUTPUT']
