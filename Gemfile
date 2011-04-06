@@ -1,9 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'sinatra'
-gem 'sinatra-reloader'
-gem 'json'
-gem 'builder'
+gem 'rails', '3.0.5'
+gem 'jruby-openssl', :require => false
 
 group :test do
   gem 'rspec-rails'
