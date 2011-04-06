@@ -1,4 +1,6 @@
 SpringPetclinic::Application.routes.draw do
+  get 'vets.:format' => 'vets#index'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -1,6 +1,6 @@
 xml.instruct!
 xml.vets do
-  vets.each do |vet|
+  @vets.each do |vet|
     xml.vetList do
       xml.id vet.id
       xml.firstName vet.firstName
