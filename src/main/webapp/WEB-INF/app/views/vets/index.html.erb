@@ -1,6 +1,3 @@
-<%@ include file="/WEB-INF/jsp/includes.jsp" %>
-<%@ include file="/WEB-INF/jsp/header.jsp" %>
-
 <h2>Veterinarians:</h2>
 
 <table>
@@ -8,27 +5,25 @@
     <th>Name</th>
     <th>Specialties</th>
   </thead>
-  <c:forEach var="vet" items="${vets.vetList}">
+  <% @vets.each do |vet| -%>
     <tr>
-      <td>${vet.firstName} ${vet.lastName}</td>
+      <td><%= vet.firstName %> <%= vet.lastName %></td>
       <td>
-	    <c:forEach var="specialty" items="${vet.specialties}">
-          ${specialty.name}
-        </c:forEach>
-        <c:if test="${vet.nrOfSpecialties == 0}">none</c:if>
+        <% vet.specialties.each do |specialty| -%>
+          <%= specialty.name %>
+        <% end -%>
+        <% if vet.nr_of_specialties == 0 %>none<% end -%>
       </td>
     </tr>
-  </c:forEach>
+  <% end -%>
 </table>
 <table class="table-buttons">
   <tr>
     <td>
-      <a href="<spring:url value="/vets.xml" htmlEscape="true" />">View as XML</a>
+      <a href="/vets.xml">View as XML</a>
     </td>
     <td>
-      <a href="<spring:url value="/vets.json" htmlEscape="true" />">View as JSON</a>
+      <a href="/vets.json">View as JSON</a>
     </td>
   </tr>
 </table>
-
-<%@ include file="/WEB-INF/jsp/footer.jsp" %>

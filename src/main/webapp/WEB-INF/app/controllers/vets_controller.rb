@@ -2,6 +2,7 @@ class VetsController < ApplicationController
   def index
     @vets = clinic.vets
     respond_to do |format|
+      format.html
       format.xml
       format.json do
         vets_hash = @vets.map do |vet|
