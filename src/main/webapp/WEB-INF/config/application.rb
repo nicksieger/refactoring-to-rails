@@ -38,6 +38,21 @@ module SpringPetclinic
     # JavaScript files you want as :defaults (application.js is always included).
     # config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
 
+    class StaticBailOut
+      def initialize(app)
+        @app = app
+      end
+      def call(env)
+        if env['PATH_INFO'] =~ %r{^/(static|favicon.ico$)}
+          [404, {}, []]
+        else
+          @app.call(env)
+        end
+      end
+    end
+
+    config.middleware.insert 0, StaticBailOut
+
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
