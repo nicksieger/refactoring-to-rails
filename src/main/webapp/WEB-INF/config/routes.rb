@@ -1,5 +1,5 @@
 SpringPetclinic::Application.routes.draw do
-  get 'vets.:format' => 'vets#index'
+  resources :vets
 
   get 'owners/:owner_id/pets/:id/visits.:format' => 'visits#index'
 
