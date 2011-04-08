@@ -1,0 +1,24 @@
+<h2>Owners:</h2>
+
+<table>
+  <thead>
+    <th>Name</th>
+    <th>Address</th>
+    <th>City</th>
+    <th>Telephone</th>
+    <th>Pets</th>
+  </thead>
+  <% @owners.each do |owner| -%>
+    <tr>
+      <td>
+          <%= link_to "#{owner.firstName} #{owner.lastName}", owner_path(owner.id) %>
+      </td>
+      <td><%= owner.address %></td>
+      <td><%= owner.city %></td>
+      <td><%= owner.telephone %></td>
+      <td><% owner.pets.each do |pet| -%><%= pet.name %>&nbsp;<% end -%></td>
+    </tr>
+  <% end -%>
+</table>
+<br/>
+<%= link_to 'Add Owner', new_owner_path %>
