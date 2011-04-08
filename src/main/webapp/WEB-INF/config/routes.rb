@@ -3,6 +3,8 @@ SpringPetclinic::Application.routes.draw do
 
   get 'owners/:owner_id/pets/:id/visits.:format' => 'visits#index'
 
+  get 'owners/search' => 'owners#search'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
