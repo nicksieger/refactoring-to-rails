@@ -1,8 +1,7 @@
-begin
-  require 'rubygems'
-  require 'bundler/setup'
-rescue LoadError
-  fail "Please 'gem install bundler' and 'bundle install' first."
-end
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-FileList['lib/tasks/*.rake'].each {|f| import f }
+require File.expand_path('../config/application', __FILE__)
+require 'rake'
+
+SpringPetclinic::Application.load_tasks
