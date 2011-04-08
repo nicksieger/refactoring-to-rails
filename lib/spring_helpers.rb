@@ -11,6 +11,10 @@ module org::springframework::beans::factory::BeanFactory
 end
 
 module Spring
+  def self.included(base)
+    base.extend self
+  end
+
   def context
     CONTEXT
   end
