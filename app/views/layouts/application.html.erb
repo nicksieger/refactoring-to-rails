@@ -2,11 +2,11 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" href="/static/styles/petclinic.css" type="text/css"/>
+  <%= stylesheet_link_tag :all %>
   <title>PetClinic :: a Rails + Spring demonstration</title>	
 </head>
 
-<body style="background-image: url(/static/images/rails-banner-graphic.png);">
+<body>
 
   <div id="main">
 
@@ -15,7 +15,7 @@
   <table class="footer">
     <tr>
       <td><a href="/">Home</a></td>
-      <td align="right"><img src="/static/images/springsource-logo.png" alt="Sponsored by SpringSource"/></td>
+      <td align="right"><%= image_tag 'springsource-logo.png', :alt => "Sponsored by SpringSource" %></td>
     </tr>
   </table>
 
