@@ -32,4 +32,20 @@ class org::springframework::samples::petclinic::BaseEntity
   def persisted?
     !new?
   end
+
+  # Since the Hibernate model classes are technically not fully
+  # unloaded every request (even though the constants are), we need to
+  # reset validations here.
+  def self.before_remove_const
+    if respond_to?(:_validators)
+      _validators.clear
+      reset_callbacks(:validate)
+    end
+  end
+
+  def update_attributes(attrs)
+    attrs.each do |k,v|
+      send("#{k}=", v) if respond_to?("#{k}=")
+    end
+  end
 end

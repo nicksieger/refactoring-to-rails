@@ -1,0 +1,10 @@
+<% unless object.errors.empty? -%>
+<div class="errors">
+  <p>There were problems with your entry, please correct them and re-submit.</p>
+  <ul>
+    <% object.errors.full_messages.each do |e| -%>
+    <li><%= e %></li>
+    <% end -%>
+  </ul>
+</div>
+<% end -%>
