@@ -25,7 +25,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
-				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
 			</props>
 		</property>
