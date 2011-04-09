@@ -1,0 +1,45 @@
+<%= form_for @owner do |f| %>
+  <%= render :partial => 'shared/errors', :locals => { :object => @owner } %>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :first_name %>
+        <br/>
+        <%= f.text_field :first_name, :size => 30, :maxlength => 80 %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :last_name %>
+        <br/>
+        <%= f.text_field :last_name, :size => 30, :maxlength => 80 %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :address %>
+        <br/>
+        <%= f.text_field :address, :size => 30, :maxlength => 80 %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :city %>
+        <br/>
+        <%= f.text_field :city, :size => 30, :maxlength => 80 %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :telephone %>
+        <br/>
+        <%= f.text_field :telephone, :size => 20, :maxlength => 20 %>
+      </th>
+    </tr>
+    <tr>
+      <td>
+        <p class="submit"><%= f.submit "#{@owner.new? ? 'Add' : 'Update'} Owner" %></p>
+      </td>
+    </tr>
+  </table>
+<% end -%>
