@@ -23,3 +23,13 @@ module Spring
     context['clinic']
   end
 end
+
+class org::springframework::samples::petclinic::BaseEntity
+  def self.name
+    super.split('::')[-1]
+  end
+
+  def persisted?
+    !new?
+  end
+end

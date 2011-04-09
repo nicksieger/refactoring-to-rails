@@ -1,0 +1,87 @@
+<h2>Owner Information</h2>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <td><b><%= @owner.first_name %> <%= @owner.last_name %></b></td>
+  </tr>
+  <tr>
+    <th>Address</th>
+    <td><%= @owner.address %></td>
+  </tr>
+  <tr>
+    <th>City</th>
+    <td><%= @owner.city %></td>
+  </tr>
+  <tr>
+    <th>Telephone </th>
+    <td><%= @owner.telephone %></td>
+  </tr>
+</table>
+<table class="table-buttons">
+  <tr>
+    <td>
+      <%= link_to 'Edit Owner', edit_owner_path %>
+    </td>
+    <td>
+      <%= link_to 'Destroy Owner', owner_path(@owner), :confirm => 'Are you sure?', :method => :delete %>
+    </td>
+    <td>
+      <%= link_to 'Add New Pet', new_owner_pet_path(@owner) %>
+    </td>
+  </tr>
+</table>
+
+<h2>Pets and Visits</h2>
+
+<% @owner.pets.each do |pet| -%>
+  <table width="94%">
+    <tr>
+      <td valign="top">
+        <table>
+          <tr>
+            <th>Name</th>
+            <td><b><%= pet.name %></b></td>
+          </tr>
+          <tr>
+            <th>Birth Date</th>
+            <td><%= pet.birth_date.to_s %></td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td><%= pet.type.name %></td>
+          </tr>
+        </table>
+      </td>
+      <td valign="top">
+        <table>
+          <thead>
+            <th>Visit Date</th>
+            <th>Description</th>
+          </thead>
+          <% pet.visits.each do |visit| -%>
+            <tr>
+              <td><%= visit.date.to_s %></td>
+              <td><%= visit.description %></td>
+            </tr>
+          <% end -%>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table class="table-buttons">
+    <tr>
+      <td>
+        <%= link_to 'Edit Pet', edit_owner_pet_path(@owner, pet) %>
+      </td>
+      <td></td>
+      <td>
+        <%= link_to 'Add Visit', new_owner_pet_visit_path(@owner, pet) %>
+      </td>
+      <td></td>
+      <td>
+        <%= link_to 'Atom Feed', owner_pet_visits_path(@owner, pet, 'atom') %>
+      </td>
+    </tr>
+  </table>
+<% end -%>

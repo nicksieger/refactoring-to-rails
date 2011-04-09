@@ -9,4 +9,8 @@ class OwnersController < ApplicationController
       redirect_to owner_path(@owners.first)
     end
   end
+
+  def show
+    @owner = Owner.load(params[:id])
+  end
 end
