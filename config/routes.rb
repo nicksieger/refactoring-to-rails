@@ -7,6 +7,10 @@ SpringPetclinic::Application.routes.draw do
     collection do
       get :search
     end
+
+    resources :pets do
+      resources :visits
+    end
   end
 
   # The priority is based upon order of creation:
