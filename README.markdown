@@ -13,14 +13,11 @@ We're using the Spring-MVC-based "Petclinic" application as the
 project subject to the refactoring. We sourced the code of the
 application from [this subversion repository][svn].
 
-## "Small" Refactoring
-
-There are three versions of the refactoring: small, medium and large.
-Each version is stored on a different branch in this repository. The
-three branches build upon each other in succession.
-
-This branch is the "small" branch, demonstrating initial steps for how
-you can add JRuby and Ruby code alongside the existing application.
+There are three versions of the refactoring: `small`, `medium` and
+`large`. Each version is stored on a different branch in this
+repository. The three branches build upon each other in succession.
+The size name of each of the refactorings is an indicator to the
+amount of deviation from the original Java-only Spring MVC project.
 
 ## Getting Started
 
