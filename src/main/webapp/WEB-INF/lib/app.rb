@@ -12,12 +12,12 @@ get '/rack/' do
   '<h1>Sinatra</h1>'
 end
 
-get '/rack/vets.xml' do
+get '/vets.xml' do
   builder(:vets, { :content_type => 'application/vnd.petclinic+xml' },
           :vets => clinic.vets)
 end
 
-get '/rack/vets.json' do
+get '/vets.json' do
   content_type 'application/json'
   JSON.pretty_generate(clinic.vets.map do |vet|
     { "id" => vet.id,
@@ -31,7 +31,7 @@ get '/rack/vets.json' do
   end)
 end
 
-get '/rack/owners/:owner/pets/:pet/visits.atom' do |owner_id, pet_id|
+get '/owners/:owner/pets/:pet/visits.atom' do |owner_id, pet_id|
   builder(:visits, { :content_type => 'application/atom+xml' },
           :visits => clinic.loadPet(pet_id.to_i).visits)
 end
