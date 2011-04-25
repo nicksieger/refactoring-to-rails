@@ -44,8 +44,22 @@ class org::springframework::samples::petclinic::BaseEntity
   end
 
   def update_attributes(attrs)
+    date_values = {}
     attrs.each do |k,v|
-      send("#{k}=", v) if respond_to?("#{k}=")
+      if k =~ /\(/
+        md = /(.*)\((.*)\)/.match(k)
+        date_values[md[1]] ||= []
+        date_values[md[1]][md[2].to_i - 1] = v.to_i
+      else
+        send("#{k}=", v) if respond_to?("#{k}=")
+      end
+    end
+    date_values.each do |k,v|
+      if v.length > 3
+        send("#{k}=", Time.zone.local(*v))
+      else
+        send("#{k}=", Date.new(*v))
+      end
     end
   end
 end

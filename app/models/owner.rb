@@ -2,9 +2,11 @@ java_import org.springframework.samples.petclinic.Owner
 
 class Owner
   extend ActiveModel::Naming
-  include ActiveModel::Conversion
   include ActiveModel::Validations
+  include ActiveModel::Conversion
   include Spring
+
+  Pet # dev-mode: ensure child models are decorated
 
   validates_presence_of :first_name, :last_name, :address, :city, :telephone
   validates_format_of :telephone, :with => /[-0-9.+ ]+/, :message => "can only have numbers, punctuation, or spaces"

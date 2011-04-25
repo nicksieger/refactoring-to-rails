@@ -1,0 +1,33 @@
+<b>Owner:</b> <%= @pet.owner.first_name %> <%= @pet.owner.last_name %>
+<br/>
+<%= form_for [@owner, @pet] do |f| %>
+  <%= render :partial => 'shared/errors', :locals => { :object => @pet } %>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :name %>
+        <br/>
+        <%= f.text_field :name, :size => 30, :maxlength => 30 %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :birth_date %>
+        <br/>
+        <%= f.date_select :birth_date %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :type %>
+        <br/>
+        <%= f.select :type, options_from_collection_for_select(@types, "id", "name", @pet.type && @pet.type.id) %>
+      </th>
+    </tr>
+    <tr>
+      <td>
+        <p class="submit"><%= f.submit "#{@pet.new? ? 'Add' : 'Update'} Pet" %></p>
+      </td>
+    </tr>
+  </table>
+<% end -%>

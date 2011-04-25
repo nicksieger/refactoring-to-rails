@@ -1,0 +1,23 @@
+<h2>Pet</h2>
+
+<%= render :partial => "form" %>
+
+<%= form_for [@owner, @pet], :html => {:method => 'delete'} do |f| %>
+  <p class="submit"><%= f.submit "Delete Pet", :confirm => "Are you sure?" %></p>
+<% end -%>
+
+<b>Visits:</b>
+<table width="333">
+  <tr>
+    <th>Date</th>
+    <th>Description</th>
+  </tr>
+  <% @pet.visits.each do |visit| -%>
+    <% unless visit.new? -%>
+      <tr>
+        <td><%= link_to visit.date.to_s, edit_owner_pet_visit_path(@owner, @pet, visit) %></td>
+        <td><%= visit.description %></td>
+      </tr>
+    <% end -%>
+  <% end -%>
+</table>
