@@ -4,3 +4,5 @@ target
 db/*.sqlite3
 log/*.log
 tmp/
+/refactoring-to-rails.war
+/vendor/bundle
