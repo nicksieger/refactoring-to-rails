@@ -4,7 +4,10 @@ class VisitsController < ApplicationController
   before_filter :load_visit, :only => [:show, :edit, :update]
 
   def index
-    @visits = clinic.loadPet(params[:id].to_i).visits
+    @visits = @pet.visits
+    respond_to do |format|
+      format.atom
+    end
   end
 
   def new

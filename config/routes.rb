@@ -1,8 +1,6 @@
 SpringPetclinic::Application.routes.draw do
   resources :vets
 
-  get 'owners/:owner_id/pets/:id/visits.:format' => 'visits#index'
-
   resources :owners do
     collection do
       get :search
