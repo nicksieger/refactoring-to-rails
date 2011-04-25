@@ -19,7 +19,50 @@ repository. The three branches build upon each other in succession.
 The size name of each of the refactorings is an indicator to the
 amount of deviation from the original Java-only Spring MVC project.
 
-## Getting Started
+## Small
+
+The small refactoring is the starting point. We inject JRuby into a
+specific endpoint in the webapp without disrupting any of the main
+functionality. A couple of XML endpoints are transferred into Ruby
+code using Sinatra as the Ruby web framework.
+
+The techniques used in this section could be used to add a RESTful web
+service wrapper to any existing Java web application.
+
+## Medium
+
+The medium refactoring introduces Rails into the web application
+without restructuring the project. Rails application sources are
+stored under `src/main/webapp` in the place where they would appear in
+the application `.war` file. The result is that Rails can drive parts
+of the webapp but you don't gain the benefits of Rails development
+tooling.
+
+The main technique of note in this refactoring is the use of a
+"Ruby-first Rack filter": Requests to the application are first
+handled by Ruby/Rails; if Rails returns an error code, then the
+request is reset and passed through. This allows Rails to service some
+requests but leave others alone, so that you can layer successively
+more Rails requests on top of the existing application.
+
+## Large
+
+The large refactoring begins by creating the Rails application
+structure at the root of the project, and continues by moving more and
+more functionality from Spring to Rails, until the entire UI layer is
+ported from Spring MVC to Rails.
+
+The main reason for undertaking a project reorganization is to take
+advantage of the Rails workflow and tools: the console, generators,
+profiling and benchmarking, and so on.
+
+The large refactoring is completed by adding Warbler configuration,
+coming full-circle back to generating a `.war` file of the
+application. This shows that you don't have to sacrifice tradidional
+Java deployment models while still taking advantage of the "Rails way"
+of developing applications.
+
+# Getting Started
 
 To play with this code, you should [install JRuby][jruby], and then
 install Bundler with `gem install bundler`.
@@ -43,3 +86,4 @@ At any point in the history, you should be able to:
 [c2]: http://c2.com/cgi/wiki?CopyAndPasteProgramming
 [c3]: http://c2.com/cgi/wiki?VoodooChickenCoding
 [jruby]: http://jruby.org/getting-started
+
