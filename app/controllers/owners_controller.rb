@@ -12,6 +12,15 @@ class OwnersController < ApplicationController
     end
   end
 
+  def search
+  end
+
+  def show
+  end
+
+  def edit
+  end
+
   def new
     @owner = Owner.new
   end
