@@ -1,0 +1,60 @@
+<%= form_for [@pet.owner, @pet, @visit] do |f| %>
+  <b>Pet:</b>
+  <table width="333">
+    <thead>
+      <th>Name</th>
+      <th>Birth Date</th>
+      <th>Type</th>
+      <th>Owner</th>
+    </thead>
+    <tr>
+      <td><%= @pet.name %></td>
+      <td><%= @pet.birth_date.to_s %></td>
+      <td><%= @pet.type.name %></td>
+      <td><%= @pet.owner.firstName %> <%= @pet.owner.lastName %></td>
+    </tr>
+  </table>
+
+  <table width="333">
+    <tr>
+      <th>
+        <%= f.label :date %>
+        <br/>
+      </th>
+      <td>
+        <%= f.date_select :date %>
+      </td>
+    <tr/>
+    <tr>
+      <th valign="top">
+        <%= f.label :description %>
+        <br/>
+      </th>
+      <td>
+        <%= f.text_area :description, :rows => 10, :cols => 25 %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <p class="submit"><%= f.submit "#{@visit.new? ? 'Add' : 'Update'} Visit" %></p>
+      </td>
+    </tr>
+  </table>
+<% end -%>
+
+<br/>
+<b>Previous Visits:</b>
+<table width="333">
+  <tr>
+    <th>Date</th>
+    <th>Description</th>
+  </tr>
+  <% @pet.visits.each do |visit| -%>
+    <% unless visit.new? -%>
+      <tr>
+        <td><%= visit.date.to_s %></td>
+        <td><%= visit.description %></td>
+      </tr>
+    <% end -%>
+  <% end -%>
+</table>

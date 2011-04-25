@@ -6,7 +6,7 @@ class Pet
   include ActiveModel::Conversion
   include Spring
 
-  Owner; PetType # dev-mode: ensure child models are decorated
+  Owner; Visit ; PetType # dev-mode: ensure child models are decorated
 
   def birth_date
     getBirthDate && getBirthDate.to_date
