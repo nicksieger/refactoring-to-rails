@@ -3,6 +3,10 @@ source 'http://rubygems.org'
 gem 'rails', '3.0.5'
 gem 'jruby-openssl', :require => false
 
+group :development do
+  gem 'maruku'
+end
+
 group :test do
   gem 'rspec-rails'
   gem 'cucumber-rails'

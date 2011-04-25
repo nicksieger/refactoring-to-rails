@@ -1,0 +1,567 @@
+<h1 id='refactoring_to_rails_commits'>Refactoring to Rails Commits</h1>
+
+<p>The commits in this project are meant to be read from beginning to end. This document is an easy way to do that. It can be generated directly from the commit logs. You can regenerate it by running <code>rake commitdoc</code>.</p>
+
+<h3 id='add_bundler_rake_and_cucumber_infrastructure_to_test_the_app'>Add Bundler, Rake and Cucumber infrastructure to test the app</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/8c13892c080ef15467465d186f1ab1314b3dd1c7'>Commit: 8c13892</a></li>
+</ul>
+
+<p>Install JRuby, then run <code>gem install bundler</code> followed by <code>bundle install</code> to install Cucumber and the related software.</p>
+
+<p>Then run <code>rake</code> to start Tomcat and run the features. They should partially fail at this point. We&#8217;ll need to fix a couple things in the petclinic Spring MVC app to rectify that in the next two commits.</p>
+
+<h3 id='configure_spring_to_ignore__header_and_use__as_default'>Configure Spring to ignore <code>Accept:</code> header and use <code>text/html</code> as default</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/e01ef98b8d8a480db55383133a6fad18dd6c5272'>Commit: e01ef98</a></li>
+</ul>
+
+<p>This cripples Spring&#8217;s content negotiation enough to allow Celerity/HtmlUnit to behave like a browser.</p>
+
+<p>This fixes the &#8220;View as XML&#8221; scenario.</p>
+
+<h3 id='add__tags_into_spring_views_so_that_capybara_can_fill_form_fields'>Add <code>label</code> tags into Spring views so that Capybara can fill form fields</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/c9150f4f70e55f8fd7eac34934bdd729eba23e2f'>Commit: c9150f4</a></li>
+</ul>
+
+<p>This fixes the rest of the features in the original Spring MVC app. At this point <code>rake cucumber</code> should report:</p>
+
+<pre><code>13 scenarios (13 passed)
+75 steps (75 passed)</code></pre>
+
+<h3 id='introduce_jrubyrack_and_rackservlet'>Introduce JRuby-Rack and RackServlet</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/8064358ca8d0c0b4733e9656c0656f3352f887d2'>Commit: 8064358</a></li>
+</ul>
+
+<p>In this commit, we&#8217;re wiring up JRuby and JRuby-Rack into the application. We need three things to make that happen:</p>
+
+<ol>
+<li>Add jruby-complete and jruby-rack dependencies in pom.xml</li>
+
+<li>Wire up RackServletContextListener and RackServlet in web.xml</li>
+
+<li>Make a new rackup file in WEB-INF/config.ru. We&#8217;ll use the simple <code>Rack::Lobster</code> demo application for starters.</li>
+</ol>
+
+<p>At this point, you should be able to start Tomcat with <code>rake tomcat:run</code> and <a href='http://localhost:3000/rack/'>open a browser</a> to verify that the Lobster app is working.</p>
+
+<h3 id='change_rack_application_to_sinatra'>Change Rack application to Sinatra</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/046ef32b6d554f8e19468c88717485ca8e7ace43'>Commit: 046ef32</a></li>
+</ul>
+
+<p>In preparation for implementing some actions in Ruby, we added the Sinatra web framework to the <code>Gemfile</code>, re-bundled, and changed <code>config.ru</code> to load a Sinatra application in app.rb.</p>
+
+<p>At this point, <code>rake tomcat:run</code> still works to run the Spring MVC app, but the <code>petclinic.war</code> won&#8217;t deploy unless you run the application server in an environment with <code>GEM_HOME</code> set to where the gems were installed. It&#8217;s possible to make a standalone war with the gems packaged in it but we won&#8217;t get to that until later.</p>
+
+<p>We&#8217;re also using the <code>sinatra-reloader</code> gem for code reloading, since developing in Ruby doesn&#8217;t make much sense if we can&#8217;t change the code on the fly. Code reloading is activated by <code>RACK_ENV=development</code>, which we set by default in the <code>tomcat:run</code> rake task.</p>
+
+<p>To experiment with code reloading, start Tomcat, <a href='http://localhost:3000/rack/'>view the main Sinatra page</a>, change app.rb, and then reload the page. You should see your edits take effect.</p>
+
+<h3 id='change_vets_view_as_xml_link_to_point_to_the_sinatra_app'>Change vets &#8220;View as XML&#8221; link to point to the Sinatra app</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/b909efb2154a9afbb987a8e4cc96bf8b482c899f'>Commit: b909efb</a></li>
+</ul>
+
+<p>Now we&#8217;re ready to start some refactoring. Of course the first step in a refactoring is to make a test fail.</p>
+
+<p>At this point, running the features should show the following:</p>
+
+<pre><code>(::) failed steps (::)
+
+expected: /xml/,
+     got: &quot;text/html;charset=utf-8&quot; (using =~)
+Diff:
+@@ -1,2 +1,2 @@
+-/xml/
++text/html;charset=utf-8
+ (RSpec::Expectations::ExpectationNotMetError)
+org/jruby/RubyProc.java:268:in `call&#39;
+./features/step_definitions/xml_json_steps.rb:12:in `(root)&#39;:in `/^I should see an XML document$/&#39;
+features/vets.feature:6:in `Then I should see an XML document&#39;
+
+Failing Scenarios:
+cucumber features/vets.feature:3 # Scenario: View vets as XML
+
+13 scenarios (1 failed, 12 passed)
+75 steps (1 failed, 1 skipped, 73 passed)</code></pre>
+
+<h3 id='implement_'>Implement <code>/rack/vets.xml</code>.</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/5fdc56772eefb85a916aa50e3efbf8f18c94e15a'>Commit: 5fdc567</a></li>
+</ul>
+
+<p>Next step in refactoring: Make the test green again.</p>
+
+<p>In this commit we added a Sinatra <code>get</code> action for <code>/rack/vets.xml</code> that renders the xml with Builder.</p>
+
+<p>We also added some Spring helpers that use JRuby&#8217;s Java integration to look up the Spring context from within the servlet context, and make it possible to get the Clinic object out of it for use by our Sinatra action.</p>
+
+<h3 id='make_the_atom_feature_fail_by_changing_the_link_to_point_at_rack'>Make the Atom feature fail by changing the link to point at Rack</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/edb354f9bbcc4a1bf94533d741b047b275a72e96'>Commit: edb354f</a></li>
+</ul>
+
+<p>Next, we&#8217;re going to replace the pet visits Atom action to use Sinatra. Again, for this refactoring we&#8217;ll start by making a change that makes the tests go red.</p>
+
+<pre><code>(::) failed steps (::)
+
+expected: /xml/,
+     got: &quot;text/html;charset=utf-8&quot; (using =~)
+Diff:
+@@ -1,2 +1,2 @@
+-/xml/
++text/html;charset=utf-8
+ (RSpec::Expectations::ExpectationNotMetError)
+org/jruby/RubyProc.java:268:in `call&#39;
+./features/step_definitions/xml_json_steps.rb:12:in `(root)&#39;:in `/^I should see an XML document$/&#39;
+features/visits.feature:17:in `Then I should see an XML document&#39;
+
+Failing Scenarios:
+cucumber features/visits.feature:12 # Scenario: Visits Atom Feed
+
+13 scenarios (1 failed, 12 passed)
+75 steps (1 failed, 1 skipped, 73 passed)</code></pre>
+
+<h3 id='implement_the_atom_action_in_sinatra'>Implement the Atom action in Sinatra</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/482ab3412b4c504535cc8764d3b2a38f8c50b45f'>Commit: 482ab34</a></li>
+</ul>
+
+<p>At this point, we should be green again. For simplicity, we used Builder to assemble the Atom XML rather than a custom Ruby/Atom library.</p>
+
+<p>Along the way, we extended <code>java.util.Date</code> in <code>java_ext.rb</code> by adding <code>#to_date</code> and <code>#to_time</code> methods to convert to Ruby <code>Date</code> and <code>Time</code> objects, respectively.</p>
+
+<h3 id='add_a_view_as_json_link_to_the_vets_jsp'>Add a &#8220;View as JSON&#8221; link to the vets JSP</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/a33f0f2076087fa889209317f23b00a25ee1f073'>Commit: a33f0f2</a></li>
+</ul>
+
+<p>Now we&#8217;re at a point where we can start to add new functionality to the app. Here, we&#8217;ll add a JSON version of the vets XML document.</p>
+
+<p>Since this is a new feature not present in the original version of the petclinic, we&#8217;ve included the feature to verify this in the <code>extended</code> cucumber profile.</p>
+
+<p>Running <code>rake cucumber:extended</code> at this point shows you some red:</p>
+
+<pre><code>(::) failed steps (::)
+
+expected: /json/,
+     got: &quot;text/html;charset=utf-8&quot; (using =~)
+Diff:
+@@ -1,2 +1,2 @@
+-/json/
++text/html;charset=utf-8
+ (RSpec::Expectations::ExpectationNotMetError)
+org/jruby/RubyProc.java:268:in `call&#39;
+./features/step_definitions/xml_json_steps.rb:21:in `(root)&#39;:in `/^I should see a JSON document$/&#39;
+features/vets.feature:13:in `Then I should see a JSON document&#39;
+
+Failing Scenarios:
+cucumber -p extended features/vets.feature:10 # Scenario: View vets as JSON
+
+14 scenarios (1 failed, 13 passed)
+79 steps (1 failed, 1 skipped, 77 passed)</code></pre>
+
+<h3 id='implement_rackvetsjson_in_the_sinatra_app'>Implement /rack/vets.json in the Sinatra app</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/4a2d3fc81acc285be90284831d2bc74efb7177bd'>Commit: 4a2d3fc</a></li>
+</ul>
+
+<p>We&#8217;re using the <code>json</code> gem that we added to our <code>Gemfile</code> earlier. Generating JSON is straightforward &#8211; we obtain a list of vets from the clinic object and map it to an array of Ruby hashes.</p>
+
+<p><code>rake cucumber:extended</code> should now pass.</p>
+
+<pre><code>14 scenarios (14 passed)
+79 steps (79 passed)</code></pre>
+
+<h3 id='move_builder_logic_to_sinatra_views'>Move Builder logic to Sinatra views</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/b92309db44cb6496f251fcfb52ee7156b4f76175'>Commit: b92309d</a></li>
+</ul>
+
+<p>As a last step in the &#8220;small&#8221; refactoring, we configure Sinatra to use views and move the builder template logic to them. This greatly simplifies the actions in <code>app.rb</code>, showing that it pays to keep view logic separate from controller logic for all but the most trivial of applications.</p>
+
+<p>The JSON action could also be simplified through the use of a helper module, but we&#8217;ll leave that as an exercise.</p>
+
+<p>We&#8217;ll see the separation of concerns play more heavily as we move toward Rails in the &#8220;medium&#8221; refactoring.</p>
+
+<h3 id='change_from_a_rack_servlet_to_a_filter'>Change from a Rack servlet to a filter</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/9744785d1625b9d328e2e141d275dd32536495bc'>Commit: 9744785</a></li>
+</ul>
+
+<p>This allows us to intercept every request and give Ruby a chance to handle it. For this we&#8217;re introducing a custom filter called <code>RubyFirstRackFilter</code>, which is similar in operation to the <code>RackFilter</code> that comes with JRuby-Rack except that Ruby gets first dibs on handling the request. If Ruby returns an error, then control is turned over to the rest of the application.</p>
+
+<p>Note: The <code>RubyFirstRackFilter</code> will probably get merged into a future release of JRuby-Rack. For now just consider it a part of the library that you wouldn&#8217;t need to maintain in your application.</p>
+
+<h3 id='revert_links_back_to_pre_versions_and_disable_spring_content_negotiation'>Revert links back to pre-<code>/rack</code> versions and disable Spring content negotiation</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/af37b87aed08ae6ab5473e632d10333aaf452c74'>Commit: af37b87</a></li>
+</ul>
+
+<p>Next, we&#8217;re going to verify that we can implement actions in Ruby mixed among the URI-space of application that still take precedence. We&#8217;ll do this by first inducing failures in the Cucumber suite, and then rectifying them by changing Ruby code.</p>
+
+<p>We&#8217;re reverting the URL changes in c63937b9 and d3a937a2 to remove the <code>/rack</code> prefixes and disabling the Spring content negotiation configuration that serves up XML and Atom content. This causes three of our extended features to fail:</p>
+
+<pre><code>Failing Scenarios:
+cucumber -p extended features/vets.feature:3 # Scenario: View vets as XML
+cucumber -p extended features/vets.feature:10 # Scenario: View vets as JSON
+cucumber -p extended features/visits.feature:12 # Scenario: Visits Atom Feed
+
+14 scenarios (3 failed, 11 passed)
+79 steps (3 failed, 3 skipped, 73 passed)</code></pre>
+
+<h3 id='change_sinatra_routes_to_remove__prefix'>Change Sinatra routes to remove <code>/rack</code> prefix</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/4cfa0b3c727f09d6e48dc1cdc9f2cfce4a70ec4e'>Commit: 4cfa0b3</a></li>
+</ul>
+
+<p>As expected, changing the Sinatra routes to remove the <code>/rack</code> prefix fixes all features. <code>rake cucumber:extended</code> is back to green.</p>
+
+<pre><code>14 scenarios (14 passed)
+79 steps (79 passed)</code></pre>
+
+<h3 id='change_from_sinatra_to_rails'>Change from Sinatra to Rails</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/06f4f05d22fd145b518e136d526b515dfc4c3e70'>Commit: 06f4f05</a></li>
+</ul>
+
+<p>Now we&#8217;re going to change from Sinatra to Rails. To do this, we first generated an empty Rails app as follows:</p>
+
+<pre><code>rails new spring-petclinic -O
+mv spring-petclinic/{app,config} src/main/webapp/WEB-INF
+rm -rf spring-petclinic</code></pre>
+
+<p>We&#8217;re not quite doing full-blown Rails development yet, so we don&#8217;t need supporting directories like <code>script</code>, <code>test</code>, and <code>vendor</code>. (We already have a <code>lib</code> directory under <code>WEB-INF</code>.)</p>
+
+<p>We&#8217;ll update our <code>Gemfile</code> to use Rails instead of Sinatra and re-bundle.</p>
+
+<p>We&#8217;ll change web.xml to use JRuby-Rack&#8217;s Rails context listener, which provides some extra integration to the servlet environment (connecting the Rails logger to the container, for example). This also means we don&#8217;t need <code>WEB-INF/config.ru</code> any more.</p>
+
+<p>We don&#8217;t need our Sinatra <code>app.rb</code> either, but we&#8217;ll leave it for now so that we can migrate the code to Rails.</p>
+
+<p>At this point some of our Cucumber features are failing again. <code>rake</code> now show:</p>
+
+<pre><code>Failing Scenarios:
+cucumber features/vets.feature:3 # Scenario: View vets as XML
+cucumber features/visits.feature:12 # Scenario: Visits Atom Feed</code></pre>
+
+<p>That&#8217;s to be expected, as we haven&#8217;t implemented those actions yet. Let&#8217;s do that next.</p>
+
+<h3 id='configure_rails_for_a_single_runtime_plus_early_bailout_on__urls'>Configure Rails for a single runtime, plus early bailout on <code>/static</code> URLs</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/832735b2e3e47b7edd4f537785d0f79c8d0e7a87'>Commit: 832735b</a></li>
+</ul>
+
+<p>This is a small startup and performance optimization for the fact that when we use <code>RubyFirstRackFilter</code>, requests for static assets will pass through to Rails, and possibly cause more than one runtime to be booted, slowing down initialization.</p>
+
+<h3 id='implement__with_rails'>Implement <code>vets.xml</code> with Rails</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/bd0f9c0b8f8bbbb615cf5d5c83d5cbcd36fb12ef'>Commit: bd0f9c0</a></li>
+</ul>
+
+<p>We are able to implement the <code>vets.xml</code> view in Rails pretty easily because we have already done most of the ground work previously.</p>
+
+<ol>
+<li>We require our <code>spring_helpers.rb</code> and <code>include Spring</code> in the <code>ApplicationController</code> so that we have access to the Spring context again.</li>
+
+<li>We add a route in <code>config/routes.rb</code> to map to <code>vets#index</code>.</li>
+
+<li>We create a <code>VetsController</code> with an <code>#index</code> action. We simply have to initialize a <code>@vets</code> instance variable there with the vets collection from the clinic.</li>
+
+<li>We copy our Sinatra <code>views/vets.builder</code> template to <code>app/views/vets/index.xml.builder</code>, changing the <code>vets</code> local to a <code>@vets</code> instance variable instaed.</li>
+</ol>
+
+<p>With those changes, we still have one more failing scenario:</p>
+
+<pre><code>Failing Scenarios:
+cucumber features/visits.feature:12 # Scenario: Visits Atom Feed</code></pre>
+
+<p>Let&#8217;s fix this along with our <code>vets.json</code> scenario in the next commit.</p>
+
+<h3 id='fix_remaining_scenarios_in_rails'>Fix remaining scenarios in Rails</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/d7623fd3feca5a2f8cafef15b584d7faefa7a5a8'>Commit: d7623fd</a></li>
+</ul>
+
+<p>To get back to green, we changed the following:</p>
+
+<ol>
+<li>We added a visits route, a <code>VisitsController</code>, and <code>app/views/visits/index.atom.builder</code> to implement the Atom feed.</li>
+
+<li>We also added a <code>#respond_to</code> block in <code>VetsController</code> containing the JSON logic copied from our Sinatra <code>app.rb</code>.</li>
+
+<li>We now can delete the remaining remnants of the Sinatra app.</li>
+</ol>
+
+<p><code>rake cucumber:extended</code> is now green again.</p>
+
+<pre><code>14 scenarios (14 passed)
+79 steps (79 passed)</code></pre>
+
+<h3 id='copy_jsp_contents_to_layout_and_new_welcome_view'>Copy JSP contents to layout and new welcome view</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/baba26da61ed6bf5615665245882b73f60032cef'>Commit: baba26d</a></li>
+</ul>
+
+<p>For the next step in this refactoring, we&#8217;re going to start serving HTML views in Rails and transition over some of the JSPs to Rails views.</p>
+
+<p>In this incremental, incomplete step, we&#8217;re copying the content of <code>WEB-INF/jsps/welcome.jsp</code> to <code>app/views/welcome/index.html.erb</code> and concatenating the content of the <code>includes.jsp</code>, <code>headers.jsp</code>, and <code>footers.jsp</code> inside of <code>app/views/layouts/application.html.erb</code>.</p>
+
+<p>We haven&#8217;t converted the JSP content over to ERB yet because we want to demonstrate that separately in the next commit.</p>
+
+<h3 id='convert_jspisms_to_ordinary_urls__erb'>Convert JSP-isms to ordinary URLs + ERb</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/28ff88e55eb21f046e10b6cfefccc1e8909378f2'>Commit: 28ff88e</a></li>
+</ul>
+
+<p>In this step we convert all JSP tags in the layout and welcome view to ordinary URLs. Next we&#8217;ll wire up a route to a controller for the welcome page.</p>
+
+<p>We also put a customized banner graphic in the layout to visually distinguish pages served by Rails from those still served by Spring.</p>
+
+<h3 id='add__and_root_route'>Add <code>WelcomeController</code> and root route</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/603a555d7c253c4b8c74f4d9d88d22ad7d8dd4d3'>Commit: 603a555</a></li>
+</ul>
+
+<p>The welcome page is now served by Rails, as shown by the banner graphic on the home page.</p>
+
+<p>Cucumber features still pass.</p>
+
+<h3 id='move_vetsjsp_to_appviewsvetsindexhtmlerb'>Move vets.jsp to app/views/vets/index.html.erb</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/df2c211a99f430886cbfb0fc76114fa211f2edcc'>Commit: df2c211</a></li>
+</ul>
+
+<p>This induces two new failures for us to fix.</p>
+
+<h3 id='implement__html_with_rails'>Implement <code>vets#index</code> HTML with Rails</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/64bbd5e35b479a45cb6feb02df67ae6b9444afa8'>Commit: 64bbd5e</a></li>
+</ul>
+
+<p>Here we&#8217;re again converting JSPisms to ERB, plus switching over to a full <code>resources :vets</code> route that will allow us to handle <code>/vets</code>.</p>
+
+<h3 id='move_search_form_to_rails'>Move search form to Rails</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/13765a16a95b8da036444cf7fd396dcb75a71aac'>Commit: 13765a1</a></li>
+</ul>
+
+<p>We&#8217;re going to build the <code>owner#search</code> action next, so we again take the step of moving the JSP form directly to a Rails view to induce a failure.</p>
+
+<p>It turns out a lot of our Cucumber features depend on navigating through the search form, so we now fail quite a few of them:</p>
+
+<pre><code>Failing Scenarios:
+cucumber features/owners.feature:3 # Scenario: Owner page
+cucumber features/owners.feature:10 # Scenario: Navigate to Add Owner
+cucumber features/owners.feature:27 # Scenario: Edit Owner
+cucumber features/owners.feature:37 # Scenario: Search Owners
+cucumber features/pets.feature:3 # Scenario: Add New Pet
+cucumber features/pets.feature:17 # Scenario: Edit Pet
+cucumber features/smoke_test.feature:13 # Scenario: Owners
+cucumber features/visits.feature:3 # Scenario: Add a visit
+cucumber features/visits.feature:12 # Scenario: Visits Atom Feed
+
+13 scenarios (9 failed, 4 passed)
+75 steps (9 failed, 41 skipped, 25 passed)</code></pre>
+
+<h3 id='implement__action'>Implement <code>owners#search</code> action</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/e75b47e410086eee47722831efad532a5a231dbb'>Commit: e75b47e</a></li>
+</ul>
+
+<p>Here we&#8217;re writing just the minimum amount of code to make the features succeed again. To do that we need to add a route, a controller, and ERB-ify the view.</p>
+
+<p>What&#8217;s interesting at this point is that the display of the search form happens in Rails, but the processing of the form still happens in Java/Spring. You can see this in the application at this point by seeing that the Rails logo appears on the search form page, but once you submit the form, it goes away.</p>
+
+<h3 id='add_empty_rails_application_at_the_root_of_the_project'>Add empty Rails application at the root of the project</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/cce31e25fcce1cb06a67c1483c2f5c8e05d4ae3c'>Commit: cce31e2</a></li>
+</ul>
+
+<p>We&#8217;re now going to embark on the &#8220;large&#8221; refactoring. What we consider makes it &#8220;large&#8221; is that it&#8217;s potentially more disruptive to your existing Java development workflow. We&#8217;ll aim to run the entire application inside a <code>rails server</code> process. Changing the project structure to mirror a regular Rails application allows us to use generators and other Rails tools.</p>
+
+<p>This commit is also a bit bigger because we&#8217;ll need a couple more things in place before we can resume running the Cucumber features, Then, once we do, we&#8217;ll immediately be staring at a bunch of failures because we haven&#8217;t implemented the rest of the application yet.</p>
+
+<h3 id='change_cucumber_to_work_with_inmemory_app'>Change Cucumber to work with in-memory app</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/d3081d84c892b29095a5b373b99d7ab6bd33740b'>Commit: d3081d8</a></li>
+</ul>
+
+<p>This changes Cucumber&#8217;s <code>support/env.rb</code> file to resemble a typical Cucumber-Rails-style project. Also, We don&#8217;t need the Tomcat-related tasks anymore.</p>
+
+<h3 id='move_rails_code_assets_and_config_into_place'>Move Rails code, assets and config into place</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/b036a4ad9901d75f9aecda4eab170171b09802d6'>Commit: b036a4a</a></li>
+</ul>
+
+<p>We&#8217;re reclaiming the Rails code we already wrote and moving it to the proper place in <code>app/</code> and <code>lib/</code>. We also moved images and stylesheets, as well as helper code.</p>
+
+<p>The application still doesn&#8217;t really run, because there&#8217;s no Spring context &#8211; we need to boot it ourselves, since there&#8217;s no container to do it for us. That Spring configuration will come in the next commit.</p>
+
+<h3 id='get_spring_context_booting'>Get Spring context booting</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/27aa71ee95c52135594b5d4dcc094f57f1d6013d'>Commit: 27aa71e</a></li>
+</ul>
+
+<p>To get the Spring context booting inside Rails, we have to do a couple things.</p>
+
+<ol>
+<li>We use Spring&#8217;s <code>ClassPathXmlApplicationContext</code> class to boot the context, and add the <code>config</code> directory to the classpath so the Spring XML files can be found by it.</li>
+
+<li>We have to ensure all the Spring jar files and dependencies are added to the classpath.</li>
+</ol>
+
+<p>Normally this second step would be a huge pain if not for a nifty new Maven plugin that ships with JRuby 1.6. Basically, you run this plugin and it ensures you have all your jars downloaded and cached, and then it spits out a Ruby script to add those jars to the classpath. You can see the output in <code>config/initializers/classpath.rb</code>. There&#8217;s a new Rake task <code>maven_classpath</code> that can be used to (re-)generate the file.</p>
+
+<h3 id='fix_asset_paths_to_get_stylesheet_rendering_properly'>Fix asset paths to get stylesheet rendering properly</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/1b1f1d031dfd0e2a88a6a2a2a5df922a3dfd3e9a'>Commit: 1b1f1d0</a></li>
+</ul>
+
+<p>Here we&#8217;re changing views to make use of Rails&#8217; static asset helpers, so that the stylesheet and images are rendered properly in the browser.</p>
+
+<h3 id='implement__action'>Implement <code>owner#search</code> action</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/039885498893fb0ca86c786ffa45b63c56133cee'>Commit: 0398854</a></li>
+</ul>
+
+<p>We now can display a listing of owners in response to submitting the search form. We&#8217;re starting down a road of doing things more Rails-like by adding an <code>Owner</code> model. Note that we&#8217;re actually just declaring the <code>Owner</code> Java object as our model, and decorating it with some ruby mehods.</p>
+
+<p>We get another scenario green but still have quite a few to go.</p>
+
+<pre><code>13 scenarios (9 failed, 4 passed)
+75 steps (9 failed, 25 skipped, 41 passed)</code></pre>
+
+<h3 id='add_'>Add <code>owner#show</code></h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/dc4a00381d60706a15924578c4843e28c74e1db0'>Commit: dc4a003</a></li>
+</ul>
+
+<p>The most interesting part of this commit is that we&#8217;re starting to turn the <code>Owner</code> hibernate model into an <code>ActiveModel</code>. By adding <code>ActiveModel::Naming</code> and <code>ActiveModel::Conversion</code> and implementing <code>Owner.name</code> and <code>Owner#persisted?</code> we get a <code>#to_param</code> for free which allows the named route method <code>owner_path(owner_obj)</code> to work as expected.</p>
+
+<p>Two more scenarios pass.</p>
+
+<pre><code>13 scenarios (7 failed, 6 passed)
+75 steps (7 failed, 18 skipped, 50 passed)</code></pre>
+
+<h3 id='implement_createupdate_owner'>Implement create/update owner</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/a6a0457744a96739815be15c5f192b98bec45899'>Commit: a6a0457</a></li>
+</ul>
+
+<p>A number of things are happening here to make the create/update operations take shape.</p>
+
+<ul>
+<li>We added an <code>#update_attributes</code> method to allow mass-assignment of form attributes</li>
+
+<li>We added <code>new</code>, <code>edit</code>, and <code>_form</code> templates per the typical Rails pattern</li>
+
+<li>We added <code>ActiveModel::Validations</code> to the model and validate attributes before saving</li>
+</ul>
+
+<p>We now pass all the owner scenarios. Only pet and visit scenarios remain.</p>
+
+<pre><code>13 scenarios (4 failed, 9 passed)
+75 steps (4 failed, 12 skipped, 59 passed)</code></pre>
+
+<h3 id='implement_pet_controller_and_features'>Implement pet controller and features</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/aae36cede1e178ec1043878fd9c6f21e23ef66f2'>Commit: aae36ce</a></li>
+</ul>
+
+<p>Aside from the usual machinations, one item of note here is a change we made to our custom <code>#update_attributes</code> helper to recognize date fields in the same way as ActiveRecord, so that we can use the <code>#date_select</code> form helper.</p>
+
+<h3 id='implement_add_visit_scenario'>Implement add visit scenario</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/3cf0172fe03abc56123577164197986a02cc04d7'>Commit: 3cf0172</a></li>
+</ul>
+
+<p>Here we added the actions to the visits controller to implement the add/update visit scenario, along with the form. As we&#8217;ve seen, everything we wrote here is pretty much standard Rails except for the use of ActiveModel in the visit model.</p>
+
+<h3 id='implement_the_visits_atom_feed'>Implement the visits atom feed</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/eb8a9a6c88512c3d0696379a637897afa7343436'>Commit: eb8a9a6</a></li>
+</ul>
+
+<p>Here we switched the visits atom feed to use Rails&#8217; <code>#atom_feed</code> helper. We also switched the <code>visits#index</code> action to use a MIME <code>#respond_to</code> to use content negotiation. As a result we no longer need the custom route for the atom feed.</p>
+
+<p>Now all the scenarios pass again.</p>
+
+<pre><code>13 scenarios (13 passed)
+75 steps (75 passed)</code></pre>
+
+<h3 id='implement_activemodel_serializaton_on_vet_model'>Implement ActiveModel serializaton on Vet model</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/6a7564ffb64f1801026049558188122eb44e33f7'>Commit: 6a7564f</a></li>
+</ul>
+
+<p>As an added bonus, here we&#8217;re creating a Vet model and including <code>ActiveModel::Serializers</code> into it. This allows us to drop our XML template as well as the custom code in the controller to create a JSON hash.</p>
+
+<h3 id='update_documentation_for_repository'>Update documentation for repository</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/5a9553484d61c37c52a79c7461aa77bfb687f996'>Commit: 5a95534</a></li>
+</ul>
+
+<h3 id='make_implicit_actions_explicit_to_work_around_rails_5673'>Make implicit actions explicit to work around Rails #5673</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/140d503789f17245690d9d85effce59a88f1dd8c'>Commit: 140d503</a></li>
+</ul>
+
+<p>Rails 3.0.5 and earlier <a href='https://rails.lighthouseapp.com/projects/8994/tickets/5673'>have a bug</a> where filters are indiscriminately run in production mode, causing errors on <code>owners#search</code> or <code>owners#show</code> depending on which is run first. This commit works around that.</p>
+
+<h3 id='add_warbler_configuration_that_includes_spring_xml_and_all_jars'>Add Warbler configuration that includes Spring XML and all jars</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/af91cba05ae3c58d9ed884534f3299dbcfb9b409'>Commit: af91cba</a></li>
+</ul>
+
+<p>To bring the refactoring around full-circle, we added this Warbler configuration that creates a war file with the application class files, Spring configuration and all jar libraries included in their proper places.</p>
+
+<h3 id='add_small_medium_large_sections_to_readme'>Add small, medium, large sections to README</h3>
+
+<ul>
+<li><a href='https://github.com/nicksieger/refactoring-to-rails/commit/7107896b346c898a5e9358b1e016a2450c87336b'>Commit: 7107896</a></li>
+</ul>
