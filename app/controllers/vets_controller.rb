@@ -1,21 +1,13 @@
 class VetsController < ApplicationController
   def index
-    @vets = clinic.vets
+    @vets = Vet.all
     respond_to do |format|
       format.html
-      format.xml
+      format.xml do
+        render :xml => @vets.to_a.to_xml
+      end
       format.json do
-        vets_hash = @vets.map do |vet|
-          { "id" => vet.id,
-            "firstName" => vet.firstName,
-            "lastName" => vet.lastName
-          }.tap do |h|
-            unless vet.specialties.empty?
-              h["specialties"] = vet.specialties.map {|s| { "id" => s.id, "name" => s.name } }
-            end
-          end
-        end
-        render :json => vets_hash
+        render :json => @vets.to_a.to_json
       end
     end
   end
