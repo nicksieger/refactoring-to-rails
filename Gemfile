@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.5'
+gem 'rails', '3.2.17'
 gem 'jruby-openssl', :require => false
 
 group :development do
